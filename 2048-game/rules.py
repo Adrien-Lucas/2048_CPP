@@ -82,7 +82,21 @@ def slide_is_possible(board, i, perm=IDENTITY):
        contents follows the log convention:
        0 means "empty cell" and N>0 means "cell containing 2 ** N".
     """
-    raise NotImplementedError()
+    n = 0
+    while n < (len(board[i])-1):
+        print(board[i][n])
+        if board[i][n] == 0:
+            if board[i][n+1] != 0 :
+                return True
+            else:
+                n += 1
+                continue
+        elif board[i][n] == board[i][n+1]:
+            return True
+        else :
+            n += 1
+            continue
+    return False
 
 
 def move_dir_possible(direction, board):
