@@ -82,26 +82,30 @@ def slide_is_possible(board, i, perm=IDENTITY):
        contents follows the log convention:
        0 means "empty cell" and N>0 means "cell containing 2 ** N".
     """
-    n = 0
-    while n < (len(board[i])-1):
-        print(board[i][n])
+    for n in range(len(board[i])-1):
         if board[i][n] == 0:
             if board[i][n+1] != 0 :
                 return True
             else:
-                n += 1
                 continue
         elif board[i][n] == board[i][n+1]:
             return True
         else :
-            n += 1
             continue
     return False
 
 
 def move_dir_possible(direction, board):
     """test whether a move_dir applied on board is possible."""
-    raise NotImplementedError()
+    for i in range(len(board)):
+        ln_tst = []        
+        for k in range(SIZE):
+            ln_tst.append(board[PERM[direction][i][k][0]][PERM[direction][i][k][1]])
+        if slide_is_possible([ln_tst], 0):
+            return True
+        else:
+            continue
+    return False
 
 
 def game_over(board):
