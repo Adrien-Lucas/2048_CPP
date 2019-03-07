@@ -83,13 +83,8 @@ def slide_is_possible(board, i, perm=IDENTITY):
        0 means "empty cell" and N>0 means "cell containing 2 ** N".
     """
     for n in range(len(board[i])-1):
-<<<<<<< HEAD
         if board[perm[i][n][0]][perm[i][n][1]] == 0:
             if board[perm[i][n+1][0]][perm[i][n+1][1]] != 0 :
-=======
-        if board[i][n] == 0:
-            if board[i][n+1] != 0 :
->>>>>>> bc75bf146e49e7d0f57d4c27df807a1d90a6bad0
                 return True
             else:
                 continue
@@ -102,20 +97,12 @@ def slide_is_possible(board, i, perm=IDENTITY):
 
 def move_dir_possible(direction, board):
     """test whether a move_dir applied on board is possible."""
-<<<<<<< HEAD
+
     for i in range(SIZE):
         if slide_is_possible(board, i, PERM[direction]):
             return True
-=======
-    for i in range(len(board)):
-        ln_tst = []        
-        for k in range(SIZE):
-            ln_tst.append(board[PERM[direction][i][k][0]][PERM[direction][i][k][1]])
-        if slide_is_possible([ln_tst], 0):
-            return True
         else:
             continue
->>>>>>> bc75bf146e49e7d0f57d4c27df807a1d90a6bad0
     return False
 
 
@@ -127,9 +114,7 @@ def game_over(board):
     for i in range(0,4):
         if(move_dir_possible(PERM[i], board) == False):
             return True
-            
     return False
-    raise NotImplementedError()
 
 
 def slide(in_board, out_board, i, perm=IDENTITY):
