@@ -112,13 +112,12 @@ def game_over(board):
     """check if a direction can be played !
        PRECONDITION: the board is not empty !
     """
-    if(move_dir_possible(PERM[LEFT], board) == False 
-    and move_dir_possible(PERM[RIGHT], board) == False
-    and move_dir_possible(PERM[UP], board) == False
-    and move_dir_possible(PERM[DOWN], board) == False):
-        return True
-    else:
-        return False
+    
+    for i in range(0,4):
+        if(move_dir_possible(PERM[i], board) == False):
+            return True
+            
+    return False
     raise NotImplementedError()
 
 
