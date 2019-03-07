@@ -126,6 +126,21 @@ def slide(in_board, out_board, i, perm=IDENTITY):
 
     Returns True iff 'board' has changed
     """
+    print(out_board[i])
+    x = SIZE-1
+    while(x > 0):
+        
+        if(in_board[i][x] == 0):
+            del out_board[i][x]
+        elif(in_board[i][x] == in_board[i][x-1]):
+            out_board[i][x-1] += 1
+            del out_board[i][x]
+
+            x-= 1
+        x -= 1
+    while(len(out_board[i]) < SIZE):
+        out_board[i].append(0)
+        
     raise NotImplementedError()
     return slide_is_possible(board, i, perm)  # A CHANGER POUR GAGNER EN EFFICACITE
 
