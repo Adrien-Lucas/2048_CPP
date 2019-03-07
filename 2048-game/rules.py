@@ -111,10 +111,10 @@ def game_over(board):
        PRECONDITION: the board is not empty !
     """
     
-    for i in range(0,4):
-        if(move_dir_possible(PERM[i], board) == False):
-            return True
-    return False
+    for i in range(SIZE):
+        if (move_dir_possible(i, board)):
+            return False
+    return True
 
 
 def slide(in_board, out_board, i, perm=IDENTITY):
