@@ -6,21 +6,19 @@ DIR_NAME = ('DOWN', 'LEFT', 'RIGHT', 'UP')
 SIZE = 4  # board size
 LAST = SIZE - 1
 
-
 # PERMUTATIONS
-   
+
 IDENTITY = tuple(tuple((i, j) for j in range(SIZE)) for i in range(SIZE))
 MIRROR = tuple(tuple((i, j) for j in reversed(range(SIZE))) for i in range(SIZE))
 TRANSPOSE = tuple(tuple((j, i) for j in range(SIZE)) for i in range(SIZE))
 ANTITRANS = tuple(tuple((j, i) for j in reversed(range(SIZE))) for i in reversed(range(SIZE)))
 
 PERM = (
-    ANTITRANS, # DOWN
+    ANTITRANS,  # DOWN
     IDENTITY,  # LEFT
-    MIRROR,    # RIGHT
+    MIRROR,  # RIGHT
     TRANSPOSE  # UP
 )
-
 
 # A few predefined boards
 
@@ -82,13 +80,13 @@ def slide_is_possible(board, i, perm=IDENTITY):
        contents follows the log convention:
        0 means "empty cell" and N>0 means "cell containing 2 ** N".
     """
-    for n in range(len(board[i])-1):
-        if board[i][n] == 0:
-            if board[i][n+1] != 0:
+    for n in range(len(board[i]) - 1):
+        if board[perm[i][n][0]][perm[i][n][1]] == 0:
+            if board[perm[i][n + 1][0]][perm[i][n + 1][1]] != 0:
                 return True
             else:
                 continue
-        elif board[i][n] == board[i][n+1]:
+        elif board[perm[i][n][0]][perm[i][n][1]] == board[perm[i][n + 1][0]][perm[i][n + 1][1]]:
             return True
         else:
             continue
@@ -97,12 +95,8 @@ def slide_is_possible(board, i, perm=IDENTITY):
 
 def move_dir_possible(direction, board):
     """test whether a move_dir applied on board is possible."""
-    for i in range(len(board)):
-        ln_tst = []
-        for k in range(SIZE):
-            ln_tst.append(board[PERM[direction][i][k][0]][PERM[direction][i][k][1]])
-        # print(ln_tst)
-        if slide_is_possible([ln_tst], 0):
+    for i in range(SIZE):
+        if slide_is_possible(board, i, PERM[direction]):
             return True
         else:
             continue
@@ -113,11 +107,9 @@ def game_over(board):
     """check if a direction can be played !
        PRECONDITION: the board is not empty !
     """
-    for i in range(4):
+    for i in range(SIZE):
         if move_dir_possible(i, board):
             return False
-        else:
-            continue
     return True
 
 
@@ -128,10 +120,38 @@ def slide(in_board, out_board, i, perm=IDENTITY):
     For example, if the line was initially [2, 2, 0, 0]
     then it becomes [3, 0, 0, 0].
 
-    Returns True iff 'board' has changed
+    Returns True if 'board' has changed
     """
-    raise NotImplementedError()
-    return slide_is_possible(board, i, perm)  # A CHANGER POUR GAGNER EN EFFICACITE
+    # print(out_board[i])
+    # out_board[i][j] = out_board[perm[i][j][0]][perm[i][j][1]]
+    ln_tst = []
+    for n in range(SIZE):
+        ln_tst.append(in_board[perm[i][n][0]][perm[i][n][1]])
+    # print(ln_tst)
+    x = 0
+    j = 0
+    while j < SIZE:
+        if ln_tst[x] == 0:
+            del ln_tst[x]
+            x -= 1
+        elif x + 1 < len(ln_tst) and ln_tst[x+1] == 0:
+            del ln_tst[x+1]
+            x -= 1
+        elif x + 1 < len(ln_tst) \
+                and ln_tst[x] == ln_tst[x+1]:
+            ln_tst[x] += 1
+            del ln_tst[x+1]
+            j += 1
+        x += 1
+        j += 1
+
+    while len(ln_tst) < SIZE:
+            ln_tst.append(0)
+
+    for n in range(SIZE):
+        out_board[perm[i][n][0]][perm[i][n][1]] = ln_tst[n]
+
+    return out_board != in_board
 
 
 def move_dir(direction, board):
@@ -140,8 +160,36 @@ def move_dir(direction, board):
        'board' remains unchanged.
        The resulting board 'res' satisfies 'res == board' iff 'res is board'
     """
-    raise NotImplementedError()
+    res = board
+    for n in range(SIZE):
+        if slide(board, res, n, PERM[direction]):
+            ln_tst = []
+            for k in range(SIZE):
+                ln_tst.append(board[PERM[direction][n][k][0]][PERM[direction][n][k][1]])
+            # print(ln_tst)
+            x = 0
+            j = 0
+            while j < SIZE:
+                if ln_tst[x] == 0:
+                    del ln_tst[x]
+                    x -= 1
+                elif x + 1 < len(ln_tst) and ln_tst[x + 1] == 0:
+                    del ln_tst[x + 1]
+                    x -= 1
+                elif x + 1 < len(ln_tst) \
+                        and ln_tst[x] == ln_tst[x + 1]:
+                    ln_tst[x] += 1
+                    del ln_tst[x + 1]
+                    j += 1
+                x += 1
+                j += 1
 
+            while len(ln_tst) < SIZE:
+                ln_tst.append(0)
+
+            for k in range(SIZE):
+                res[PERM[direction][n][k][0]][PERM[direction][n][k][1]] = ln_tst[k]
+    return res
 
 
 def level(board):
