@@ -6,21 +6,19 @@ DIR_NAME = ('DOWN', 'LEFT', 'RIGHT', 'UP')
 SIZE = 4  # board size
 LAST = SIZE - 1
 
-
 # PERMUTATIONS
-   
+
 IDENTITY = tuple(tuple((i, j) for j in range(SIZE)) for i in range(SIZE))
 MIRROR = tuple(tuple((i, j) for j in reversed(range(SIZE))) for i in range(SIZE))
 TRANSPOSE = tuple(tuple((j, i) for j in range(SIZE)) for i in range(SIZE))
 ANTITRANS = tuple(tuple((j, i) for j in reversed(range(SIZE))) for i in reversed(range(SIZE)))
 
 PERM = (
-    ANTITRANS, # DOWN
+    ANTITRANS,  # DOWN
     IDENTITY,  # LEFT
-    MIRROR,    # RIGHT
+    MIRROR,  # RIGHT
     TRANSPOSE  # UP
 )
-
 
 # A few predefined boards
 
@@ -82,15 +80,15 @@ def slide_is_possible(board, i, perm=IDENTITY):
        contents follows the log convention:
        0 means "empty cell" and N>0 means "cell containing 2 ** N".
     """
-    for n in range(len(board[i])-1):
+    for n in range(len(board[i]) - 1):
         if board[perm[i][n][0]][perm[i][n][1]] == 0:
-            if board[perm[i][n+1][0]][perm[i][n+1][1]] != 0 :
+            if board[perm[i][n + 1][0]][perm[i][n + 1][1]] != 0:
                 return True
             else:
                 continue
-        elif board[perm[i][n][0]][perm[i][n][1]] == board[perm[i][n+1][0]][perm[i][n+1][1]]:
+        elif board[perm[i][n][0]][perm[i][n][1]] == board[perm[i][n + 1][0]][perm[i][n + 1][1]]:
             return True
-        else :
+        else:
             continue
     return False
 
@@ -110,7 +108,7 @@ def game_over(board):
     """check if a direction can be played !
        PRECONDITION: the board is not empty !
     """
-    
+
     for i in range(SIZE):
         if (move_dir_possible(i, board)):
             return False
@@ -127,23 +125,26 @@ def slide(in_board, out_board, i, perm=IDENTITY):
     Returns True iff 'board' has changed
     """
     print(out_board[i])
-    x = SIZE-1
-    while(x > 0):
-        
-        if(in_board[i][x] == 0):
+    x = 0
+    j = 0
+    while j < SIZE:
+        if out_board[i][x] == 0:
             del out_board[i][x]
-        elif(in_board[i][x] == in_board[i][x-1]):
-            out_board[i][x-1] += 1
-            del out_board[i][x]
+            x -= 1
+        elif x + 1 < len(out_board[i]) and out_board[i][x+1] == 0:
+            del out_board[i][x+1]
+            x -= 1
+        elif x + 1 < len(out_board[i]) and out_board[i][x] == out_board[i][x + 1]:
+            out_board[i][x] += 1
+            del out_board[i][x + 1]
+            j += 1
+        x += 1
+        j += 1
 
-            x-= 1
-        x -= 1
-    while(len(out_board[i]) < SIZE):
+    while len(out_board[i]) < SIZE:
         out_board[i].append(0)
-        
-    raise NotImplementedError()
-    return slide_is_possible(board, i, perm)  # A CHANGER POUR GAGNER EN EFFICACITE
 
+    return out_board != in_board
 
 def move_dir(direction, board):
     """Returns a board resulting from the slide of 'board'
@@ -152,7 +153,6 @@ def move_dir(direction, board):
        The resulting board 'res' satisfies 'res == board' iff 'res is board'
     """
     raise NotImplementedError()
-
 
 
 def level(board):
@@ -197,4 +197,3 @@ def observer_example(board, player):
         print('next player is:', PLAYER_NAME[player])
         log = v
         input('press return to continue --')
-
