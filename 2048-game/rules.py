@@ -234,3 +234,4 @@ def observer_example(board, player):
         print('next player is:', PLAYER_NAME[player])
         log = v
         input('press return to continue --')
+
