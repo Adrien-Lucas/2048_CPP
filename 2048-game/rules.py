@@ -122,34 +122,35 @@ def slide(in_board, out_board, i, perm=IDENTITY):
 
     Returns True if 'board' has changed
     """
-    # print(out_board[i])
     # out_board[i][j] = out_board[perm[i][j][0]][perm[i][j][1]]
-    ln_tst = []
     for n in range(SIZE):
-        ln_tst.append(in_board[perm[i][n][0]][perm[i][n][1]])
-    # print(ln_tst)
+        out_board[perm[i][n][0]][perm[i][n][1]] = in_board[perm[i][n][0]][perm[i][n][1]]
     x = 0
     j = 0
+    
     while j < SIZE:
-        if ln_tst[x] == 0:
-            del ln_tst[x]
-            x -= 1
-        elif x + 1 < len(ln_tst) and ln_tst[x+1] == 0:
-            del ln_tst[x+1]
-            x -= 1
-        elif x + 1 < len(ln_tst) \
-                and ln_tst[x] == ln_tst[x+1]:
-            ln_tst[x] += 1
-            del ln_tst[x+1]
-            j += 1
-        x += 1
+        grabbed = False
+        x = 1
+        while not grabbed :
+            if j+x < SIZE and out_board[perm[i][j+x][0]][perm[i][j+x][1]] == 0 :
+                x += 1
+            elif j+x >= SIZE: #rien à harponner
+                j = SIZE
+                grabbed = True
+            elif out_board[perm[i][j+x][0]][perm[i][j+x][1]] != out_board[perm[i][j][0]][perm[i][j][1]] :             
+                if out_board[perm[i][j][0]][perm[i][j][1]] == 0 :
+                    out_board[perm[i][j][0]][perm[i][j][1]] = out_board[perm[i][j+x][0]][perm[i][j+x][1]]
+                    out_board[perm[i][j+x][0]][perm[i][j+x][1]] = 0
+                    j -= 1
+                elif x > 1:
+                    out_board[perm[i][j+1][0]][perm[i][j+1][1]] = out_board[perm[i][j+x][0]][perm[i][j+x][1]]
+                    out_board[perm[i][j+x][0]][perm[i][j+x][1]] = 0
+                grabbed = True
+            elif out_board[perm[i][j+x][0]][perm[i][j+x][1]] == out_board[perm[i][j][0]][perm[i][j][1]] :
+                out_board[perm[i][j][0]][perm[i][j][1]] += 1
+                out_board[perm[i][j+x][0]][perm[i][j+x][1]] = 0
+                grabbed = True
         j += 1
-
-    while len(ln_tst) < SIZE:
-            ln_tst.append(0)
-
-    for n in range(SIZE):
-        out_board[perm[i][n][0]][perm[i][n][1]] = ln_tst[n]
 
     return out_board != in_board
 
