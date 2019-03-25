@@ -107,7 +107,7 @@ def game_over(board):
     """check if a direction can be played !
        PRECONDITION: the board is not empty !
     """
-    for i in range(SIZE):
+    for i in range(4):
         if move_dir_possible(i, board):
             return False
     return True
@@ -161,35 +161,14 @@ def move_dir(direction, board):
        'board' remains unchanged.
        The resulting board 'res' satisfies 'res == board' iff 'res is board'
     """
-    res = board
-    for n in range(SIZE):
-        if slide(board, res, n, PERM[direction]):
-            ln_tst = []
-            for k in range(SIZE):
-                ln_tst.append(board[PERM[direction][n][k][0]][PERM[direction][n][k][1]])
-            # print(ln_tst)
-            x = 0
-            j = 0
-            while j < SIZE:
-                if ln_tst[x] == 0:
-                    del ln_tst[x]
-                    x -= 1
-                elif x + 1 < len(ln_tst) and ln_tst[x + 1] == 0:
-                    del ln_tst[x + 1]
-                    x -= 1
-                elif x + 1 < len(ln_tst) \
-                        and ln_tst[x] == ln_tst[x + 1]:
-                    ln_tst[x] += 1
-                    del ln_tst[x + 1]
-                    j += 1
-                x += 1
-                j += 1
+    res = [board[i].copy() for i in range(SIZE)]
 
-            while len(ln_tst) < SIZE:
-                ln_tst.append(0)
-
-            for k in range(SIZE):
-                res[PERM[direction][n][k][0]][PERM[direction][n][k][1]] = ln_tst[k]
+    for i in range(SIZE):
+        slide(board, res, i, PERM[direction])
+        
+    if res == board:
+        res = board
+    
     return res
 
 
