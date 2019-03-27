@@ -16,11 +16,11 @@ def random_tile(board):
     zeros = []
     for x in range(len(board)):
         for y in range(len(board[x])):
-            if x == 0 and y == 0:
+            if board[x][y] == 0:
                 zeros.append([x,y])
-    
-    i = random.randint(0, len(zeros))
+    i = random.randint(0, len(zeros)-1)
     a = random.random()
+    print(zeros[i][0], zeros[i][1], a)
     if(a <= 1/9):
         return(zeros[i][0], zeros[i][1], 2)
     else:
@@ -28,6 +28,9 @@ def random_tile(board):
             
     raise NotImplementedError()
 
+SIZE = 4
+EMPTYBOARD = [[0] * SIZE for i in range(SIZE)]
+print(random_tile(EMPTYBOARD))
 
 def first_direction(board):
     for d in rules.DIRECTIONS:
