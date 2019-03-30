@@ -9,28 +9,7 @@ import time
 
 
 def game_direction_first(dir_player, tile_player, board):
-    if dir_player == None:
-        assert dir_player is None
-    if tile_player == None:
-        assert tile_player is None
-    
-    i = 0
-    
-    if dir_player(board) is None:
-        assert dir_player(board) is None
-        
-    while dir_player(board) is not None:
-        board  = rules.move_dir(dir_player(board), board)
-        tile = tile_player(board)
-        if tile is not None:
-            rules.move_tile(tile_player(board), board)
-            i += 1
-        else:
-            assert rules.move_tile is None
-    
-
-    
-    return (2**rules.max_tile(board), i)
+    raise NotImplementedError()
 
 
 def game_tile_first(dir_player, tile_player, board):
