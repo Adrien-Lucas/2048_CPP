@@ -16,14 +16,14 @@ FIRST_PLAYER = 0  # for PLAYER TILE
 
 
 # --- TILE PLAYER ----------------------
-# TILE_PLAYER = None # means interactive (for play2048 only)
+#TILE_PLAYER = None # means interactive (for play2048 only)
 TILE_PLAYER = players.random_tile
-# TILE_PLAYER = players.first_tile
+#TILE_PLAYER = players.first_tile
 
 
 # --- DIRECTION PLAYER -----------------
-# DIRECTION_PLAYER = None # means interactive (for play2048 only)
-DIRECTION_PLAYER = players.random_direction
+DIRECTION_PLAYER = None # means interactive (for play2048 only)
+#DIRECTION_PLAYER = players.random_direction
 # DIRECTION_PLAYER = players.first_direction
 
 # --- OBSERVER (to debug player2048) -------
