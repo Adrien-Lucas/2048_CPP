@@ -13,7 +13,23 @@ def random_direction(board):
 def random_tile(board):
     """returns a random 'tile move' on the board
         where tile 4 has only probably 1/9"""
-    raise NotImplementedError()
+    zeros = []
+    for x in range(len(board)):
+        for y in range(len(board[x])):
+            if board[x][y] == 0:
+                zeros.append([x,y])
+    i = random.randint(0, len(zeros)-1)
+    a = random.random()
+    print(zeros[i][0], zeros[i][1], a)
+    if(a <= 1/9):
+        return(zeros[i][0], zeros[i][1], 2)
+    else:
+        return(zeros[i][0], zeros[i][1], 1)
+            
+
+SIZE = 4
+EMPTYBOARD = [[0] * SIZE for i in range(SIZE)]
+print(random_tile(EMPTYBOARD))
 
 
 def first_direction(board):

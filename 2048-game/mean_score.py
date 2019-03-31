@@ -9,12 +9,37 @@ import time
 
 
 def game_direction_first(dir_player, tile_player, board):
-    raise NotImplementedError()
+    """Plays a game on board when dir_player is the first player"""
+    if not dir_player(board):
+        assert rules.is_full(board) is True
+    i = 0
+    while dir_player(board) is not None:
+        board = rules.move_dir(dir_player(board), board)
+        tile = tile_player(board)
+        if tile is not None:
+            rules.move_tile(tile_player(board), board)
+            i += 1
+        else:
+            assert rules.move_tile is None
+
+    return 2**rules.max_tile(board), i
 
 
 def game_tile_first(dir_player, tile_player, board):
-    raise NotImplementedError()
-
+    """Plays a game on board when tile_player is the first player"""
+    board2 = [board[i].copy() for i in range(rules.SIZE)]
+    if not dir_player(board):
+        assert rules.game_over(board) is True
+    i = 0
+    while tile_player(board2) is not None:
+        rules.move_tile(tile_player(board2), board2)
+        dir = dir_player(board2)
+        i += 1
+        if dir is not None:
+            board2 = rules.move_dir(dir, board2)
+        else:
+            assert rules.game_over(board2) is True
+    return 2 ** rules.max_tile(board2), i
 
 def mean_score():
     if config.FIRST_PLAYER == 0:
