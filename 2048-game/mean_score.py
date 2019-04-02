@@ -91,3 +91,7 @@ def mean_score():
 if __name__ == "__main__":
     mean_score()
 
+# SIMULATIONS :
+# First Tile VS First Dir : tuile max = 512
+# Rand Tile VS Rand Dir : tuile max moyenne = 104.76 (max = 256)
+# Rand Tile VS First Dir : tuile max moyenne = 198.95 (max = 1024)

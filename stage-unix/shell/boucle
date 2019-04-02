@@ -1,0 +1,21 @@
+#! /bin/sh
+
+while true; do
+    echo "           *"         ; sleep 0.3
+    echo "          ***"        ; sleep 0.3
+    echo "         *****"       ; sleep 0.3
+    echo "        *******"      ; sleep 0.3
+    echo "       *********"     ; sleep 0.3
+    echo "      ***********"    ; sleep 0.3
+    echo "     *************"   ; sleep 0.3
+    echo "    ***************"  ; sleep 0.3
+    echo "   *****************" ; sleep 0.3
+    echo "    ***************"  ; sleep 0.3
+    echo "     *************"   ; sleep 0.3
+    echo "      ***********"    ; sleep 0.3
+    echo "       *********"     ; sleep 0.3
+    echo "        *******"      ; sleep 0.3
+    echo "         *****"       ; sleep 0.3
+    echo "          ***"        ; sleep 0.3
+    echo "           *"         ; sleep 0.3
+done

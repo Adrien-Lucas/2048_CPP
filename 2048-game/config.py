@@ -22,9 +22,9 @@ TILE_PLAYER = players.random_tile
 
 
 # --- DIRECTION PLAYER -----------------
-DIRECTION_PLAYER = None # means interactive (for play2048 only)
+#DIRECTION_PLAYER = None # means interactive (for play2048 only)
 #DIRECTION_PLAYER = players.random_direction
-# DIRECTION_PLAYER = players.first_direction
+DIRECTION_PLAYER = players.first_direction
 
 # --- OBSERVER (to debug player2048) -------
 OBSERVER = None  # for nothing
@@ -42,4 +42,4 @@ FONT_HELP = "Helvetica 16"
 
 
 # --- NUMBER of GAMES (for mean_score only) -----------------
-GAMES_NUMBER = 1  # 5 # 1000
+GAMES_NUMBER = 5000  # 5 # 1000

@@ -1,0 +1,11 @@
+Ceci est votre compte Unix. Le fichier que vous etes en train de lire
+est le fichier LISEZ_MOI, a la racine de votre compte.
+
+Il contient un certain nombre de fichiers utiles pour suivre le stage
+de rentree. En particulier :
+
+* Le répertoire stage-unix/ qui contient le nécessaire pour suivre le
+  stage de rentrée.
+
+* Des configurations raisonnables pour les éditeurs de texte Emacs,
+  Vim et Atom.

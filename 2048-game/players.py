@@ -18,14 +18,15 @@ def random_tile(board):
         for y in range(len(board[x])):
             if board[x][y] == 0:
                 zeros.append([x,y])
-    i = random.randint(0, len(zeros)-1)
-    a = random.random()
-    print(zeros[i][0], zeros[i][1], a)
-    if(a <= 1/9):
-        return(zeros[i][0], zeros[i][1], 2)
+    if(len(zeros) > 0):
+        i = random.randint(0, len(zeros)-1)
+        a = random.random()
+        if(a <= 1/9):
+            return(zeros[i][0], zeros[i][1], 2)
+        else:
+            return(zeros[i][0], zeros[i][1], 1)
     else:
-        return(zeros[i][0], zeros[i][1], 1)
-            
+        return None
 
 SIZE = 4
 EMPTYBOARD = [[0] * SIZE for i in range(SIZE)]
@@ -43,4 +44,117 @@ def first_tile(board):
         for j in range(rules.LAST, -1, -1):
             if board[i][j] == 0:
                 return (i, j, 2)
+                
+def basic_coop_direction(board):
+    if(rules.is_full(board)):
+        return None
+    m = 0
+    a = 0
+    for i in range(3): 
+        s = basic_coop_score(rules.move_dir(i,board))
+        if s > m:
+            m = s
+            a = i
+    if m == 0:
+        a = 3
+    return a
+    
+def basic_coop_score(board):
+    
+    return 0
+
+def basic_coop_tile(board):
+    zeros = []
+    for x in range(len(board)):
+        for y in range(len(board[x])):
+            if board[x][y] == 0:
+                zeros.append([x,y])
+    m = 0
+    a = 0
+    if(len(zeros) > 0):
+        for i in range(len(zeros)):
+            b = rules.EMPTYBOARD
+            b[zeros[i][0], zeros[i][1]] = 2
+            s = basic_coop_score(board + b)
+            if s > m:
+                m = s
+                a = i
+        return (zeros[a][0], zeros[a][1], 2)
+    else:
+        return None
+
+#Recursive coop players
+
+def coop_direction(board):
+    if(rules.is_full(board)):
+        return None
+    m = 0
+    a = 0
+    for i in range(3): 
+        s = coop_score_dir(rules.move_dir(i,board), 4)
+        if s > m:
+            m = s
+            a = i
+    if m == 0:
+        a = 3
+    return a
+
+def coop_score_dir(board, depth):
+    if depth > 0:
+        m = 0
+        a = 0
+        for i in range(3): 
+            s = basic_coop_score(board, rules.PERM[i])
+            if s > m:
+                m = s
+                a = i
+        if m == 0:
+            a = 3
+        ret = rules.move_dir(a, board)
+        return(coop_score_tile(ret, depth-1))
+    else :
+        return basic_coop_score(board)   
+    
+def coop_tile(board):
+    zeros = []
+    for x in range(len(board)):
+        for y in range(len(board[x])):
+            if board[x][y] == 0:
+                zeros.append([x,y])
+    m = 0
+    a = 0
+    if(len(zeros) > 0):
+        for i in range(len(zeros)):
+            b = rules.EMPTYBOARD
+            b[zeros[i][0], zeros[i][1]] = 2
+            s = coop_score_tile(board + b, 4)
+            if s > m:
+                m = s
+                a = i
+        return (zeros[a][0], zeros[a][1], 2)
+    else:
+        return None
+    
+def coop_score_tile(board, depth):
+    if depth > 0:
+        zeros = []
+        for x in range(len(board)):
+            for y in range(len(board[x])):
+                if board[x][y] == 0:
+                    zeros.append([x,y])
+        m = 0
+        ret = []
+        if(len(zeros) > 0):
+            for i in range(len(zeros)):
+                b = rules.EMPTYBOARD
+                b[zeros[i][0], zeros[i][1]] = 2
+                s = basic_coop_score(board + b)
+                if s > m:
+                    m = s
+                    ret = b
+        return(coop_score_dir(ret, depth-1))
+    else :
+        return basic_coop_score(board)
+
+    
 
