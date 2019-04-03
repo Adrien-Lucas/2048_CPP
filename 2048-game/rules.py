@@ -172,7 +172,37 @@ def move_dir(direction, board):
 
 
 def level(board):
-    """evaluation of the board (should only increase on well-played games)"""
+    #ak = nb restants pour k
+    #ak+1 = nb de jctions possibles pour k
+    t = []
+    m = max_tile(board)
+    for k in range(m):
+        a = 0
+        b = 0
+        excludes = []
+        for x in range(SIZE):
+            for y in range(SIZE):
+                if(board[x][y] > 0):
+                    if(x+1 < SIZE and not excludes.__contains__([x+1,y]) and board[x+1][y] == board[x][y]):
+                        a += 1
+                        excludes.append([x,y])
+                    elif(x-1 >= 0 and not excludes.__contains__([x-1,y]) and board[x-1][y] == board[x][y]):
+                        a += 1
+                        excludes.append([x,y])
+                    elif(y+1 < SIZE and not excludes.__contains__([x,y+1]) and board[x][y+1] == board[x][y]):
+                        a += 1
+                        excludes.append([x,y])
+                    elif(y-1 >= 0 and not excludes.__contains__([x,y-1]) and board[x][y-1] == board[x][y]):
+                        a += 1
+                        excludes.append([x,y])
+                    else:
+                        b += 1
+        t.append(a)
+        t.append(b)
+    s = 0
+    for i in range(len(t)):
+        s += (9**i)*(t[i]**i)
+    return s
     raise NotImplementedError()
 
 
@@ -191,6 +221,7 @@ def score(board):
     if res == 0:
         return res
     return 1 << res  # equiv to 2 ** res
+
 
 
 # -- Example of observer for play2048 below
