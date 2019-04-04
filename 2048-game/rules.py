@@ -172,38 +172,37 @@ def move_dir(direction, board):
 
 
 def level(board):
-    #ak = nb restants pour k
-    #ak+1 = nb de jctions possibles pour k
-    t = []
-    m = max_tile(board)
-    for k in range(m):
-        a = 0
-        b = 0
-        excludes = []
-        for x in range(SIZE):
-            for y in range(SIZE):
-                if(board[x][y] > 0):
-                    if(x+1 < SIZE and not excludes.__contains__([x+1,y]) and board[x+1][y] == board[x][y]):
-                        a += 1
-                        excludes.append([x,y])
-                    elif(x-1 >= 0 and not excludes.__contains__([x-1,y]) and board[x-1][y] == board[x][y]):
-                        a += 1
-                        excludes.append([x,y])
-                    elif(y+1 < SIZE and not excludes.__contains__([x,y+1]) and board[x][y+1] == board[x][y]):
-                        a += 1
-                        excludes.append([x,y])
-                    elif(y-1 >= 0 and not excludes.__contains__([x,y-1]) and board[x][y-1] == board[x][y]):
-                        a += 1
-                        excludes.append([x,y])
-                    else:
-                        b += 1
-        t.append(a)
-        t.append(b)
-    s = 0
-    for i in range(len(t)):
-        s += (9**i)*(t[i]**i)
-    return s
-    raise NotImplementedError()
+    """Calculate the score for a specified board
+    t[k] = nb of k in the board
+    t[k+1] = nb of k fusionnable in the board"""
+    xboard = [board[i].copy() for i in range(SIZE)]
+    for i in range(SIZE):
+        for j in range(SIZE):
+            ip, jp = TRANSPOSE[i][j]
+            xboard[ip][jp] = board[i][j]
+    res = 0
+    for tbl in (board, xboard):  # On teste à l'horizontal et à la vertical
+        t = [0] * 34
+        for i in range(SIZE):
+            j = 0
+            while j < SIZE:
+                if tbl[i][j] == 0:
+                    j += 1
+                elif j < LAST and tbl[i][j] == tbl[i][j+1]:  # Si la dalle est fusionnable, on saute celle d'après
+                    t[2*tbl[i][j]] += 1
+                    j += 2
+                else:
+                    t[2*tbl[i][j] - 1] += 1
+                    j += 1
+
+        s = 0
+        t = t[1:34]  # On enlève le premier indice (0) qui ne comptera pas dans le calcul du score
+        # print(t)
+        for i in range(33):
+            s += (9**i)*t[i]
+        if s > res:  # on prend le maximum des directions (horizontal vs vertical)
+            res = s
+    return res
 
 
 def max_tile(board):
