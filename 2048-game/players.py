@@ -51,17 +51,18 @@ def basic_coop_direction(board):
     m = 0
     a = 0
     for i in range(3): 
-        s = basic_coop_score(rules.move_dir(i,board))
-        if s > m:
-            m = s
-            a = i
+        if rules.move_dir(i,board) != board:
+            s = basic_coop_score(rules.move_dir(i,board))
+            if s > m:
+                m = s
+                a = i
     if m == 0:
         a = 3
     return a
     
 def basic_coop_score(board):
-    
-    return 0
+   return rules.level(board)
+
 
 def basic_coop_tile(board):
     zeros = []
@@ -74,7 +75,7 @@ def basic_coop_tile(board):
     if(len(zeros) > 0):
         for i in range(len(zeros)):
             b = rules.EMPTYBOARD
-            b[zeros[i][0], zeros[i][1]] = 2
+            b[zeros[i][0]][zeros[i][1]] = 2
             s = basic_coop_score(board + b)
             if s > m:
                 m = s
@@ -91,10 +92,11 @@ def coop_direction(board):
     m = 0
     a = 0
     for i in range(3): 
-        s = coop_score_dir(rules.move_dir(i,board), 4)
-        if s > m:
-            m = s
-            a = i
+        if rules.move_dir(i,board) != board:
+            s = coop_score_dir(rules.move_dir(i,board), 4)
+            if s > m:
+                m = s
+                a = i
     if m == 0:
         a = 3
     return a
@@ -104,10 +106,11 @@ def coop_score_dir(board, depth):
         m = 0
         a = 0
         for i in range(3): 
-            s = basic_coop_score(board, rules.PERM[i])
-            if s > m:
-                m = s
-                a = i
+            if rules.move_dir(i,board) != board:
+                s = basic_coop_score(board, rules.PERM[i])
+                if s > m:
+                    m = s
+                    a = i
         if m == 0:
             a = 3
         ret = rules.move_dir(a, board)
@@ -126,7 +129,7 @@ def coop_tile(board):
     if(len(zeros) > 0):
         for i in range(len(zeros)):
             b = rules.EMPTYBOARD
-            b[zeros[i][0], zeros[i][1]] = 2
+            b[zeros[i][0]][zeros[i][1]] = 2
             s = coop_score_tile(board + b, 4)
             if s > m:
                 m = s
@@ -147,7 +150,8 @@ def coop_score_tile(board, depth):
         if(len(zeros) > 0):
             for i in range(len(zeros)):
                 b = rules.EMPTYBOARD
-                b[zeros[i][0], zeros[i][1]] = 2
+                print(i, len(zeros))
+                b[zeros[i][0]][zeros[i][1]] = 2
                 s = basic_coop_score(board + b)
                 if s > m:
                     m = s

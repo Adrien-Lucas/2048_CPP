@@ -17,14 +17,17 @@ FIRST_PLAYER = 0  # for PLAYER TILE
 
 # --- TILE PLAYER ----------------------
 #TILE_PLAYER = None # means interactive (for play2048 only)
-TILE_PLAYER = players.random_tile
+#TILE_PLAYER = players.random_tile
 #TILE_PLAYER = players.first_tile
-
+#TILE_PLAYER = players.basic_coop_tile
+TILE_PLAYER = players.coop_tile
 
 # --- DIRECTION PLAYER -----------------
 #DIRECTION_PLAYER = None # means interactive (for play2048 only)
 #DIRECTION_PLAYER = players.random_direction
-DIRECTION_PLAYER = players.first_direction
+#DIRECTION_PLAYER = players.first_direction
+#DIRECTION_PLAYER = players.basic_coop_direction
+DIRECTION_PLAYER = players.coop_direction
 
 # --- OBSERVER (to debug player2048) -------
 OBSERVER = None  # for nothing
@@ -43,3 +46,6 @@ FONT_HELP = "Helvetica 16"
 
 # --- NUMBER of GAMES (for mean_score only) -----------------
 GAMES_NUMBER = 5000  # 5 # 1000
+
+# --- AI PARAMETERS ---
+DEPTH = 4
