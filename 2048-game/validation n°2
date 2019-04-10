@@ -1,0 +1,100 @@
+#! /usr/bin/env python3
+
+import rules
+import players
+import mean_score as ms
+
+#les couleurs à afficher dans la console
+ROUGE = "\033[1;31;40m"
+FIN = "\033[0m"
+
+NOMBRE_PARTIES = 100 #Nombre de parties pour faire la moyenne
+
+# INSERT YOUR TESTS HERE
+def play_n_games(board,dir_player,tile_player,n):
+    """
+    Cette fonction est un intermédiaire qui permet de faire une moyenne de score et de max de tuile
+    sur un gand nombre de patries pour des joueurs tile et direction donnés.
+    est utilisé dans is_better_than
+    """
+    m_score = 0 # moyenne de score
+    m_tile = 0 # moyenne de maximum de tuiles
+    for i in range(n):
+        score,tile = ms.game_tile_first(dir_player,tile_player,board)
+        m_score += score
+        m_tile += tile
+    m_score /= n
+    m_tile /= n
+    return m_score,m_tile
+
+def is_better_than(dir_player1,tile_player1,dir_player2,tile_player2):
+    """
+    Cette fonction est une fonction intermédiaire qui permet de vérifier que la stratégie que l'on 
+    est en train de définir permet d'avoir de meilleurs résultats que de faire une autre stratégie.
+    Attention ! si la stratégie n°2 est plus efficace que la stratégie n°1, cette fonction
+    retournera une ValueError, il faut donc placer la stratégie à tester en n°1.
+    Cette fonction ne retourne rien, et est utilisée dans :
+        - is_tile_better_than_random
+        - is_direction_better_than_random
+        - is_better_than_random
+    """
+
+    board = rules.STEP0
+    n = NOMBRE_PARTIES
+    print("test : stratégie plus efficace que random sur " + str(n) + " parties")
+    (s_score,s_tile) = play_n_games(board,dir_player1,tile_player1,n)
+    (r_score,r_tile) = play_n_games(board,dir_player2,tile_player2,n)
+    if (s_score,s_tile) <= (r_score,r_tile):
+        raise ValueError("Erreur : la stratégie est moins efficace que random")
+    else:
+        print("La stratégie mise en place est plus efficace que random")
+        print("Moyenne de score (moyenne de score de random) : " + str(s_score) + " (" + str(r_score)
+        + ")")
+        print("Moyenne de tuile (moyenne de tuile de random) : " + str(s_tile) + " (" + str(r_tile)
+        + ")")
+        
+
+def is_tile_better_than_random(dir_player,tile_player):
+    """
+    Cette fonction permet de mesurer, pour un dir_player fixe, de voir si le joueur tile
+    permet d'avoir de meilleurs résultats que random tile
+    """
+    is_better_than(dir_player,tile_player,dir_player,players.random_tile)
+        
+def is_direction_better_than_random(dir_player,tile_player):
+    """
+    Cette fonction permet de mesurer, pour un tile_player fixe, de voir si le joueur direction
+    permet d'avoir de meilleurs résultats que random random direction
+    """
+    is_better_than(dir_player,tile_player,players.random_direction,tile_player)
+    
+def is_better_than_random(dir_player,tile_player):
+    is_better_than(dir_player,tile_player,players.random_direction,players.random_tile)
+    
+
+#première étape de validation, correspond à la partie 4.1 du projet
+print("######## PREMIERE ETAPE ########")
+print(ROUGE + "test de basic_coop_tile :" + FIN)
+print("Avec first direction :")
+is_tile_better_than_random(players.first_direction,players.basic_coop_tile)
+print("Avec random direction :")
+is_tile_better_than_random(players.random_direction,players.basic_coop_tile)
+print(ROUGE + "test de basic_coop_direction :" + FIN)
+print("Avec first tile :")
+is_direction_better_than_random(players.basic_coop_direction,players.random_tile)
+print("Avec random tile :")
+is_direction_better_than_random(players.basic_coop_direction,players.first_tile)
+print(ROUGE + "test de la stratégie globale :" + FIN)
+is_better_than_random(players.basic_coop_direction,players.basic_coop_tile)
+print("######## FIN DE LA PREMIERE ETAPE ########")
+print("######## DEUXIEME ETAPE ########")
+print(ROUGE + "test de coop_tile :" + FIN)
+print("Avec first direction")
+is_tile_better_than_random(players.first_direction,players.coop_tile)
+print("Avec random direction")
+is_tile_better_than_random(players.random_direction,players.coop_tile)
+
+
+
+
+
