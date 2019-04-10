@@ -86,7 +86,15 @@ def basic_coop_tile(board):
 
 #Recursive coop players
 
+def key(board):
+    """returns the value for the key of the board in the memo dict"""
+    res = ''.join(str(e) for i in range(rules.SIZE)for e in board[i])
+    res = hex(int(res)) # on passe en hexadécimal c'est moins foireux
+    return res
+
 def coop_direction(board):
+    global Memo
+    Memo = {}
     if(rules.is_full(board)):
         return None
     m = 0
@@ -102,10 +110,14 @@ def coop_direction(board):
     return a
 
 def coop_score_dir(board, depth):
+    global Memo
+    idx = key(board)
+    if idx in Memo:
+        return Memo[idx]
     if depth > 0:
         m = 0
         a = 0
-        for i in range(3): 
+        for i in rules.DIRECTIONS: 
             if rules.move_dir(i,board) != board:
                 s = coop_score_tile(rules.move_dir(i,board), depth-1)
                 if s > m:
@@ -113,12 +125,16 @@ def coop_score_dir(board, depth):
                     a = i
         if m == 0:
             a = 3
-        ret = rules.move_dir(a, board)
-        return(basic_coop_score(ret))
+        res = basic_coop_score(rules.move_dir(a, board))
+        Memo[idx] = res
+        return(res)
     else :
+        Memo[idx] = basic_coop_score(board)
         return basic_coop_score(board)   
     
 def coop_tile(board):
+    global Memo
+    Memo = {}
     zeros = []
     for x in range(len(board)):
         for y in range(len(board[x])):
@@ -139,6 +155,10 @@ def coop_tile(board):
         return None
     
 def coop_score_tile(board, depth):
+    global Memo
+    idx = key(board)
+    if idx in Memo:
+        return Memo[idx]
     if depth > 0:
         zeros = []
         for x in range(len(board)):
@@ -155,8 +175,10 @@ def coop_score_tile(board, depth):
                 if s > m:
                     m = s
                     ret = b
+        Memo[idx] = basic_coop_score(ret)
         return(basic_coop_score(ret))
     else :
+        Memo[idx] = basic_coop_score(board)
         return basic_coop_score(board)
 
     

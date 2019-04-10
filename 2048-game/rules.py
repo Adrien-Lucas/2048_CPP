@@ -107,7 +107,7 @@ def game_over(board):
     """check if a direction can be played !
        PRECONDITION: the board is not empty !
     """
-    for i in range(4):
+    for i in DIRECTIONS:
         if move_dir_possible(i, board):
             return False
     return True
