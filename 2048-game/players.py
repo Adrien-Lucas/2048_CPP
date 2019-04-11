@@ -3,6 +3,8 @@
 import rules
 import random
 
+MemoDir = {}
+MemoTile = {}
 
 def random_direction(board):
     l = [d for d in rules.DIRECTIONS if rules.move_dir_possible(d, board)]
@@ -93,8 +95,8 @@ def key(board):
     return res
 
 def coop_direction(board):
-    global Memo
-    Memo = {}
+    global MemoTile
+    MemoDir = {}
     if(rules.is_full(board)):
         return None
     m = 0
@@ -110,10 +112,9 @@ def coop_direction(board):
     return a
 
 def coop_score_dir(board, depth):
-    global Memo
     idx = key(board)
-    if idx in Memo:
-        return Memo[idx]
+    if idx in MemoDir:
+        return MemoDir[idx]
     if depth > 0:
         m = 0
         a = 0
@@ -126,15 +127,15 @@ def coop_score_dir(board, depth):
         if m == 0:
             a = 3
         res = basic_coop_score(rules.move_dir(a, board))
-        Memo[idx] = res
+        MemoDir[idx] = res
         return(res)
     else :
-        Memo[idx] = basic_coop_score(board)
+        MemoDir[idx] = basic_coop_score(board)
         return basic_coop_score(board)   
     
 def coop_tile(board):
-    global Memo
-    Memo = {}
+    global MemoTile
+    MemoTile = {}
     zeros = []
     for x in range(len(board)):
         for y in range(len(board[x])):
@@ -155,10 +156,9 @@ def coop_tile(board):
         return None
     
 def coop_score_tile(board, depth):
-    global Memo
     idx = key(board)
-    if idx in Memo:
-        return Memo[idx]
+    if idx in MemoTile:
+        return MemoTile[idx]
     if depth > 0:
         zeros = []
         for x in range(len(board)):
@@ -175,10 +175,10 @@ def coop_score_tile(board, depth):
                 if s > m:
                     m = s
                     ret = b
-        Memo[idx] = basic_coop_score(ret)
+        MemoTile[idx] = basic_coop_score(ret)
         return(basic_coop_score(ret))
     else :
-        Memo[idx] = basic_coop_score(board)
+        MemoTile[idx] = basic_coop_score(board)
         return basic_coop_score(board)
 
     
