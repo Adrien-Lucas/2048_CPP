@@ -62,8 +62,22 @@ def basic_coop_direction(board):
         a = 3
     return a
     
-def basic_coop_score(board):
-   return rules.level(board)
+def basic_coop_score(board):#Favoriser le serpentin
+    quality = 0
+    #m = 0
+    #m_tile = []
+    #for x in range(len(board)):
+    #    for y in range(len(board[x])):
+    #        if board[x][y] > m:
+    #            m = board[x][y]
+    #            m_tile = [x, y]
+    sorts = sorted(sorted(board[0])+sorted(board[1])+sorted(board[2])+ sorted(board[3]))
+    snaked = [sorts[0:4] , list(reversed(sorts[4:8])) , sorts[8:12] , list(reversed(sorts[12:16]))]
+    if board == snaked:
+        quality = 50
+        print("WOW")
+    
+    return (quality, rules.level(board))
 
 
 def basic_coop_tile(board):
@@ -99,15 +113,15 @@ def coop_direction(board):
     MemoDir = {}
     if(rules.is_full(board)):
         return None
-    m = 0
+    m = ()
     a = 0
     for i in range(3): 
         if rules.move_dir(i,board) != board:
-            s = coop_score_dir(rules.move_dir(i,board), 4)
+            s = coop_score_dir(rules.move_dir(i,board), config.DEPTH)
             if s > m:
                 m = s
                 a = i
-    if m == 0:
+    if m == ():
         a = 3
     return a
 
@@ -116,7 +130,7 @@ def coop_score_dir(board, depth):
     if idx in MemoDir:
         return MemoDir[idx]
     if depth > 0:
-        m = 0
+        m = ()
         a = 0
         for i in rules.DIRECTIONS: 
             if rules.move_dir(i,board) != board:
@@ -124,7 +138,7 @@ def coop_score_dir(board, depth):
                 if s > m:
                     m = s
                     a = i
-        if m == 0:
+        if m == ():
             a = 3
         res = basic_coop_score(rules.move_dir(a, board))
         MemoDir[idx] = res
@@ -141,13 +155,13 @@ def coop_tile(board):
         for y in range(len(board[x])):
             if board[x][y] == 0:
                 zeros.append([x,y])
-    m = 0
+    m = ()
     a = 0
     if(len(zeros) > 0):
         for i in range(len(zeros)):
             b = [board[i].copy() for i in range(SIZE)]
             b[zeros[i][0]][zeros[i][1]] = 2
-            s = coop_score_tile(b, 4)
+            s = coop_score_tile(b, config.DEPTH)
             if s > m:
                 m = s
                 a = i
@@ -165,7 +179,7 @@ def coop_score_tile(board, depth):
             for y in range(len(board[x])):
                 if board[x][y] == 0:
                     zeros.append([x,y])
-        m = 0
+        m = ()
         ret = []
         for i in range(len(zeros)):
             b = [board[i].copy() for i in range(SIZE)]
@@ -187,11 +201,11 @@ def comp_dir(board):
     if (board != EMPTYBOARD) and (rules.game_over(board)):
         ValueError()
         return None
-    m = 0
+    m = ()
     a = 0
     for i in rules.DIRECTIONS: 
         if rules.move_dir(i,board) != board:
-            s = comp_score_dir(rules.move_dir(i,board), 4)
+            s = comp_score_dir(rules.move_dir(i,board), config.DEPTH)
             if s > m:
                 m = s
                 a = i        
@@ -209,7 +223,7 @@ def comp_tile(board):
     if(len(zeros) > 0):
         for i in range(len(zeros)):
             b = [board[i].copy() for i in range(SIZE)]
-            tst = [comp_score_tile(rules.move_tile(zeros[i] + [n], b), 4) for n in (1, 2)]
+            tst = [comp_score_tile(rules.move_tile(zeros[i] + [n], b), config.DEPTH) for n in (1, 2)]
             if min(tst) < res:
                 res = min(tst)
                 val = tst.index(min(tst)) + 1  # on joue 2 si les 2 tiles renvoient le même résultat
@@ -221,7 +235,7 @@ def comp_tile(board):
 
 def comp_score_dir(board, depth):
     if depth > 0:
-        m = 0
+        m = ()
         for i in rules.DIRECTIONS: 
             if rules.move_dir(i,board) != board:
                 s = comp_score_dir(rules.move_dir(i,board), depth - 1)
@@ -242,7 +256,7 @@ def comp_score_tile(board, depth):
         res = 0
         for i in range(len(zeros)):
             b = [board[i].copy() for i in range(SIZE)]
-            tst = [comp_score_tile(rules.move_tile(zeros[i] + [n], b), 4) for n in (1, 2)]
+            tst = [comp_score_tile(rules.move_tile(zeros[i] + [n], b), config.DEPTH) for n in (1, 2)]
             if min(tst) < res:
                 res = min(tst)
         return res
