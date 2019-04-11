@@ -2,6 +2,7 @@
 
 import rules
 import random
+import config
 
 MemoDir = {}
 MemoTile = {}
