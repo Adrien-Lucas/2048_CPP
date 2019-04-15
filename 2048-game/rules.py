@@ -182,6 +182,8 @@ def level(board):
     """Calculate the score for a specified board
     t[k] = nb of k in the board
     t[k+1] = nb of k fusionnable in the board"""
+    if(len(board) < SIZE):
+        return 0
     xboard = [board[i].copy() for i in range(SIZE)]
     for i in range(SIZE):
         for j in range(SIZE):
