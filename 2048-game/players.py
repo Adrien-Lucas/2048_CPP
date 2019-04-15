@@ -67,20 +67,8 @@ def basic_coop_direction(board):
     return a
 
 
-def basic_coop_score(board):  # TODO : Favoriser le serpentin
+def basic_coop_score(board):
     quality = 0
-    m = 0
-    m_tile = [0,0]
-    for x in range(len(board)):
-        for y in range(len(board[x])):
-            if board[x][y] >= m:
-                m = board[x][y]
-                m_tile = [x, y]
-    # sorts = sorted(sorted(board[0])+sorted(board[1])+sorted(board[2])+ sorted(board[3]))
-    # snaked = [sorts[0:4] , list(reversed(sorts[4:8])) , sorts[8:12] , list(reversed(sorts[12:16]))]
-    # if board == snaked:
-    #     quality = 50
-    #     # print("WOW")
     
     for x in range(len(board)):
         for y in range(len(board[x])):
@@ -90,11 +78,13 @@ def basic_coop_score(board):  # TODO : Favoriser le serpentin
             else:
                 Y = len(board) - 1 - y
             quality += board[x][Y] * (18 ** (x * len(board) + Y))
+    # Pour serpentiner, on donne de la qualité si les grosses tuiles se disposent de façon serpentinné
+    # c'est à dire si les grosses tuiles sont proches de la fin du tableau avec l'ordre de répartition qui
+    # s'inverse à chaque ligne. 
     
-    if m_tile[0] == len(board)-1 and m_tile[1] == len(board)-1:
-        quality *= 1000
-
-    return (0, rules.level(board))
+    
+    #return(rules.level(board))
+    return (quality, 0)
 
 
 def basic_coop_tile(board):
@@ -135,8 +125,9 @@ def coop_direction(board):
     m = ()
     a = 0
     for i in range(3): 
-        if rules.move_dir(i, board) != board:
-            s = coop_score_dir(rules.move_dir(i, board), config.DEPTH)
+        md = rules.move_dir(i, board)
+        if md != board:
+            s = coop_score_dir(md, config.DEPTH)
             if s > m:
                 m = s
                 a = i
@@ -153,14 +144,15 @@ def coop_score_dir(board, depth):
         m = ()
         a = 0
         for i in rules.DIRECTIONS: 
-            if rules.move_dir(i, board) != board:
-                s = coop_score_tile(rules.move_dir(i, board), depth-1)
+            md = rules.move_dir(i, board)
+            if md != board:
+                s = coop_score_tile(md, depth-1)
                 if s > m:
                     m = s
                     a = i
         if m == ():
             a = 3
-        res = basic_coop_score(rules.move_dir(a, board))
+        res = m
         MemoDir[idx] = res
         return res
     else:
@@ -209,11 +201,10 @@ def coop_score_tile(board, depth):
                 m = s
                 ret = b
         MemoTile[idx] = basic_coop_score(ret)
-        return basic_coop_score(ret)
+        return m
     else:
         MemoTile[idx] = basic_coop_score(board)
         return basic_coop_score(board)
-
 
 # ---------- Recursive comp players ----------
 
