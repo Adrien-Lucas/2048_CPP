@@ -69,20 +69,32 @@ def basic_coop_direction(board):
 
 def basic_coop_score(board):  # TODO : Favoriser le serpentin
     quality = 0
-    # m = 0
-    # m_tile = []
-    # for x in range(len(board)):
-    #     for y in range(len(board[x])):
-    #         if board[x][y] > m:
-    #             m = board[x][y]
-    #            m_tile = [x, y]
+    m = 0
+    m_tile = [0,0]
+    for x in range(len(board)):
+        for y in range(len(board[x])):
+            if board[x][y] >= m:
+                m = board[x][y]
+                m_tile = [x, y]
     # sorts = sorted(sorted(board[0])+sorted(board[1])+sorted(board[2])+ sorted(board[3]))
     # snaked = [sorts[0:4] , list(reversed(sorts[4:8])) , sorts[8:12] , list(reversed(sorts[12:16]))]
     # if board == snaked:
     #     quality = 50
     #     # print("WOW")
     
-    return quality, rules.level(board)
+    for x in range(len(board)):
+        for y in range(len(board[x])):
+
+            if x % 2 == 0:
+                Y = y
+            else:
+                Y = len(board) - 1 - y
+            quality += board[x][Y] * (18 ** (x * len(board) + Y))
+    
+    if m_tile[0] == len(board)-1 and m_tile[1] == len(board)-1:
+        quality *= 1000
+
+    return (0, rules.level(board))
 
 
 def basic_coop_tile(board):
@@ -118,7 +130,7 @@ def key(board):
 def coop_direction(board):
     global MemoDir
     MemoDir = {}
-    if rules.is_full(board):
+    if rules.game_over(board):
         return None
     m = ()
     a = 0
