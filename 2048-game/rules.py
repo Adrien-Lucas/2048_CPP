@@ -122,6 +122,13 @@ def slide(in_board, out_board, i, perm=IDENTITY):
 
     Returns True if 'board' has changed
     """
+    '''
+    On utilise la technique dite du grappin
+    On commence de l'index 0 et on traverse les cases vides jusqu'à atteindre un nombre non nul
+    L'égalité entre le "lanceur de grappin" et le chiffre atteint entraine la fusion de ces tuiles (incrémentation)
+    La différence place le nombre à côté
+    On passe au nombre suivant, jusqu'à ce qu'un "grappin" atteigne le bord du tableau
+    '''
     # out_board[i][j] = out_board[perm[i][j][0]][perm[i][j][1]]
     for n in range(SIZE):
         out_board[perm[i][n][0]][perm[i][n][1]] = in_board[perm[i][n][0]][perm[i][n][1]]
