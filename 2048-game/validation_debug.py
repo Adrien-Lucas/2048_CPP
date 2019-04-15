@@ -56,6 +56,23 @@ def Coop_dir_tst(n, Tile):
     if stdscore < score:
         raise Exception('Player compétitif plus efficace que random Tile ({0} vs. {1})'.format(score,stdscore))
 
+## Coop tests
+
+def Coop_Validation():
+    print('======== Stage : Coop validation ========')
+    config.DEPTH = 1
+    res = []
+    res.append(mean_score.game_tile_first(players.coop_direction, players.coop_tile, rules.EMPTYBOARD))
+    config.DEPTH = 2
+    res.append(mean_score.game_tile_first(players.coop_direction, players.coop_tile, rules.EMPTYBOARD))
+    
+    if(res[1] > res[0]):
+        print('Coop is ok, better depth is getting a better score')
+    else:
+        print('ERROR : Coop game with depth 2 has a lowest score than with depth 1')
+        
+Coop_Validation()
+
 # --------- TESTS ---------
 vt.start_test('Key on random board')
 Key_tst(10)
