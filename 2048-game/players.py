@@ -3,6 +3,7 @@
 import rules
 import random
 import config
+from math import inf
 
 MemoDir = {}
 MemoTile = {}
@@ -170,11 +171,17 @@ def coop_tile(board):
                 zeros.append([x, y])
     m = ()
     a = 0
-    assert len(zeros) > 0
+    if len(zeros) == 0:
+        return None
+    # profondeur progressive : on limite depth quand il y a un gd nb de tuiles vides afin de gagner en performances
+    if len(zeros) > 5:
+        depth = 2
+    else:
+        depth = config.DEPTH
     for i in range(len(zeros)):
         b = [board[i].copy() for i in range(SIZE)]
         b[zeros[i][0]][zeros[i][1]] = 2
-        s = coop_score_tile(b, config.DEPTH)
+        s = coop_score_tile(b, depth)
         if s > m:
             m = s
             a = i
@@ -208,10 +215,31 @@ def coop_score_tile(board, depth):
 
 # ---------- Recursive comp players ----------
 
+
+def comp_score(board):
+    """return a score for a specified board so as to optimise the comp players"""
+    maxb = rules.max_tile(board)
+    if maxb == 0:
+        maxb = None
+    coef = 0
+    # On favorise les board ou la tuile max est sur un bord / un coin
+    if maxb in (board[0] or board[rules.LAST]):
+        coef += 2
+    if maxb in ((board[i][0] for i in range(SIZE)) or (board[i][rules.LAST] for i in range(SIZE))):
+        coef += 2
+    # Favorise les board où les tuiles de grande valeur sont sur la même ligne
+
+    for i in range(SIZE):
+            coef += max(sum(board[i]) - 4 * min(board[i]), 0)
+    return coef*rules.level(board)
+
+
 def comp_dir(board):
     #  Inutile ici : le game over est géré par play2048
     # if (board != EMPTYBOARD) and (rules.game_over(board)):
     #     return None
+    global MemoDir
+    MemoDir = {}
     m = 0
     a = 0
     for i in rules.DIRECTIONS: 
@@ -226,15 +254,18 @@ def comp_dir(board):
 def comp_tile(board):
     """Tile player trying to return the position of the tile to add leading to the minimum score
     ACHTUNG : for some reason, only works with depth below 2"""
-
+    global MemoTile
+    MemoTile = {}
     zeros = []
     for x in range(len(board)):
         for y in range(len(board[x])):
             if board[x][y] == 0:
                 zeros.append([x, y])
-    m = 1e16
+    m = inf
     a = 0
-
+    val = 1
+    if len(zeros) == 0:  # Nécessaire pour le game-over des mean_score
+        return None
     for i in range(len(zeros)):
         b1, b2 = ([board[i].copy() for i in range(SIZE)] for k in'##')
         b1[zeros[i][0]][zeros[i][1]], b2[zeros[i][0]][zeros[i][1]] = 1, 2
@@ -247,27 +278,35 @@ def comp_tile(board):
 
 
 def comp_score_dir(board, depth):
+    idx = (key(board), depth)
+    if idx in MemoDir:
+        return MemoDir[idx]
     if depth > 0:
         m = 0
         for i in rules.DIRECTIONS: 
             if rules.move_dir(i, board) != board:
                 s = comp_score_dir(rules.move_dir(i, board), depth - 1)
                 if s > m:
-                    m = s      
+                    m = s
+        MemoDir[idx] = m
         return m
     else:
-        return rules.level(board)
+        MemoDir[idx] = comp_score(board)
+        return comp_score(board)
     
     
 def comp_score_tile(board, depth):
     """Returns the minimum score available for a specified depth & board"""
+    idx = (key(board), depth)
+    if idx in MemoTile:
+        return MemoTile[idx]
     if depth > 0:
         zeros = []
         for x in range(len(board)):
             for y in range(len(board[x])):
                 if board[x][y] == 0:
                     zeros.append([x, y])
-        m = 1e16
+        m = inf
         Outb = []
         for i in range(len(zeros)):
             b1, b2 = ([board[i].copy() for i in range(SIZE)] for k in '##')
@@ -276,6 +315,8 @@ def comp_score_tile(board, depth):
             if min(tst) < m:
                 m = min(tst)
                 Outb = (b1, b2)[tst.index(min(tst))]
-        return rules.level(Outb)
+        MemoTile[idx] = m
+        return m
     else:
-        return rules.level(board)
+        MemoTile[idx] = comp_score(board)
+        return comp_score(board)
